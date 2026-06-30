@@ -1,0 +1,1 @@
+import AdminPlaceholder from '../../components/admin/AdminPlaceholder.jsx'; export default function AdminAdmins(){return <AdminPlaceholder eyebrow="Access" title="Administrators" description="Manage approved administrators and their roles." actionLabel="Back to overview"/>;}

@@ -1,0 +1,2 @@
+import { Router } from 'express'; import { remove, upload } from '../controllers/upload.controller.js'; import { authenticate } from '../middleware/auth.middleware.js'; import { requireAdmin } from '../middleware/admin.middleware.js'; import { uploadImages } from '../middleware/upload.middleware.js'; import { asyncHandler } from '../utils/asyncHandler.js';
+const router = Router(); router.use(authenticate, requireAdmin); router.post('/', uploadImages, asyncHandler(upload)); router.delete('/', asyncHandler(remove)); export default router;

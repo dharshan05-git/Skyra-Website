@@ -1,0 +1,2 @@
+import { Router } from 'express'; import { subscribe } from '../controllers/newsletter.controller.js'; import { validate } from '../middleware/validate.middleware.js'; import { asyncHandler } from '../utils/asyncHandler.js'; import { newsletterSchema } from '../validators/newsletter.validator.js';
+const router = Router(); router.post('/', validate(newsletterSchema), asyncHandler(subscribe)); export default router;

@@ -1,0 +1,2 @@
+import { Router } from 'express'; import { getProduct, listProducts } from '../controllers/product.controller.js'; import { validate } from '../middleware/validate.middleware.js'; import { asyncHandler } from '../utils/asyncHandler.js'; import { productSlugSchema } from '../validators/product.validator.js';
+const router = Router(); router.get('/', asyncHandler(listProducts)); router.get('/:slug', validate(productSlugSchema), asyncHandler(getProduct)); export default router;

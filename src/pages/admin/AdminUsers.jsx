@@ -1,0 +1,1 @@
+import AdminPlaceholder from '../../components/admin/AdminPlaceholder.jsx'; export default function AdminUsers(){return <AdminPlaceholder eyebrow="Community" title="Customers" description="Support customer accounts and understand your audience." actionLabel="Back to overview"/>;}

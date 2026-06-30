@@ -1,0 +1,1 @@
+import AdminPlaceholder from '../../components/admin/AdminPlaceholder.jsx'; export default function AdminSettings(){return <AdminPlaceholder eyebrow="Store" title="Settings" description="Keep SKYRA contact, tax, and announcement details current." actionLabel="Back to overview"/>;}

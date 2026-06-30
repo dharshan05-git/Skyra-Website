@@ -1,0 +1,1 @@
+import AdminPlaceholder from '../../components/admin/AdminPlaceholder.jsx'; export default function AdminShipping(){return <AdminPlaceholder eyebrow="Fulfilment" title="Shipping" description="Control fixed rates and free-shipping thresholds." actionLabel="Back to overview"/>;}

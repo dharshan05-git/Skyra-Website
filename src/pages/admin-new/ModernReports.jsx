@@ -1,0 +1,37 @@
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { fetchDashboard } from '../../services/adminApi.js';
+
+const money=new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0});
+const compact=new Intl.NumberFormat('en-IN',{notation:'compact',maximumFractionDigits:1});
+const statusLabel=(value='')=>value.replaceAll('_',' ').replace(/\b\w/g,(letter)=>letter.toUpperCase());
+const statusColors={delivered:'#2f8b57',pending:'#d59938',confirmed:'#4f78b8',processing:'#8560af',packed:'#9b6c4d',shipped:'#3d8ba8',out_for_delivery:'#26728d',cancelled:'#bf4d59',paid:'#466eaa'};
+
+function RevenueChart({items}){
+  const values=items.map(item=>item.total||0),max=Math.max(...values,1),w=760,h=265,padX=42,padTop=22,padBottom=38;
+  const coords=values.map((value,index)=>({x:padX+index*((w-padX*2)/Math.max(items.length-1,1)),y:padTop+(1-value/max)*(h-padTop-padBottom)}));
+  const line=coords.map(point=>`${point.x},${point.y}`).join(' '),area=`${padX},${h-padBottom} ${line} ${w-padX},${h-padBottom}`;
+  return <div className="modern-report-chart"><svg viewBox={`0 0 ${w} ${h}`} role="img" aria-label="Revenue trend">{[0,.25,.5,.75,1].map(step=><g key={step}><line x1={padX} x2={w-padX} y1={padTop+step*(h-padTop-padBottom)} y2={padTop+step*(h-padTop-padBottom)} className="modern-report-gridline"/><text x="0" y={padTop+step*(h-padTop-padBottom)+3}>{compact.format(max*(1-step))}</text></g>)}<defs><linearGradient id="modernRevenueArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#791529" stopOpacity=".3"/><stop offset="1" stopColor="#791529" stopOpacity="0"/></linearGradient></defs><polygon points={area} fill="url(#modernRevenueArea)"/><polyline points={line} className="modern-report-line"/>{coords.map((point,index)=><g key={`${items[index]?.year}-${items[index]?.month}`}><circle cx={point.x} cy={point.y} r="4.5" className="modern-report-point"><title>{items[index]?.label}: {money.format(values[index])}</title></circle><text x={point.x} y={h-10} textAnchor="middle" className="modern-report-month">{items[index]?.label}</text></g>)}</svg></div>
+}
+
+function Donut({items}){const total=items.reduce((sum,item)=>sum+item.orders,0);let offset=0;const gradient=items.length?items.map(item=>{const start=offset;offset+=total?item.orders/total*100:0;return `${statusColors[item.status]||'#9b8e88'} ${start}% ${offset}%`}).join(', '):'#eee 0 100%';return <div className="modern-status"><div className="modern-status__donut" style={{background:`conic-gradient(${gradient})`}}><div><strong>{total}</strong><span>Total orders</span></div></div><div className="modern-status__legend">{items.map(item=><div key={item.status}><i style={{background:statusColors[item.status]||'#9b8e88'}}/><span>{statusLabel(item.status)}</span><b>{item.orders}</b><small>{total?Math.round(item.orders/total*100):0}%</small></div>)}</div></div>}
+
+export default function ModernReports(){
+  const [data,setData]=useState(null),[error,setError]=useState(''),[loading,setLoading]=useState(true),[months,setMonths]=useState(12);
+  const load=useCallback(async()=>{setLoading(true);setError('');try{setData(await fetchDashboard())}catch(err){setError(err.message)}finally{setLoading(false)}},[]);
+  useEffect(()=>{queueMicrotask(load)},[load]);
+  const chart=useMemo(()=>data?.revenueChart?.slice(-months)||[],[data,months]);
+  const bestMonth=useMemo(()=>chart.reduce((best,item)=>(item.total||0)>(best?.total||0)?item:best,null),[chart]);
+  if(loading)return <div className="modern-report-loading"><div/><div/><section/><section/></div>;
+  const stats=data?.stats||{},payments=data?.paymentOverview||[],statuses=data?.orderStatusOverview||[],products=data?.topProducts||[];
+  const maxPayment=Math.max(...payments.map(item=>item.total||0),1),maxProduct=Math.max(...products.map(item=>item.sold||0),1);
+  return <section className="modern-reports">
+    <header className="modern-reports__head"><div><p>Store intelligence</p><h1>Reports & analytics</h1><span>Clear, live insights from your SKYRA orders and catalogue.</span></div><div><div className="modern-period">{[6,12].map(value=><button key={value} className={months===value?'is-active':''} onClick={()=>setMonths(value)}>Last {value} months</button>)}</div><button className="modern-refresh" onClick={load}>↻ Refresh data</button></div></header>
+    {error&&<div className="na-message is-error">{error} <button onClick={load}>Try again</button></div>}
+    <div className="modern-kpis"><article className="is-featured"><span>₹</span><div><small>Total paid revenue</small><strong>{money.format(stats.revenue||0)}</strong><p>Across {stats.paidOrders||0} paid orders</p></div></article><article><span>◇</span><div><small>All orders</small><strong>{compact.format(stats.orders||0)}</strong><p>{stats.pendingOrders||0} need attention</p></div></article><article><span>↗</span><div><small>Average order value</small><strong>{money.format(stats.averageOrderValue||0)}</strong><p>Paid orders only</p></div></article><article><span>♙</span><div><small>Customer accounts</small><strong>{compact.format(stats.users||0)}</strong><p>{stats.products||0} active products</p></div></article></div>
+    <div className="modern-report-main"><article className="modern-report-card modern-report-card--revenue"><header><div><p>Revenue performance</p><h2>Monthly paid revenue</h2></div><div className="modern-chart-key"><i/> Revenue</div></header><RevenueChart items={chart}/><footer><span>Best month in this view</span><strong>{bestMonth?`${bestMonth.label} · ${money.format(bestMonth.total)}`:'No paid sales yet'}</strong></footer></article><article className="modern-report-card"><header><div><p>Fulfilment health</p><h2>Orders by status</h2></div></header><Donut items={statuses}/></article></div>
+    <div className="modern-report-secondary"><article className="modern-report-card"><header><div><p>Payment mix</p><h2>Revenue by method</h2></div></header><div className="modern-bars">{payments.map(item=><div key={item.provider}><div><span>{statusLabel(item.provider)}</span><b>{money.format(item.total)}</b></div><i><b style={{width:`${Math.max(3,item.total/maxPayment*100)}%`}}/></i><small>{item.orders} order{item.orders===1?'':'s'}</small></div>)}{!payments.length&&<Empty text="Payment activity will appear here."/>}</div></article><article className="modern-report-card"><header><div><p>Product performance</p><h2>Top-selling pieces</h2></div><small className="modern-report-card__note">Values show sales revenue, not unit price</small></header><div className="modern-products-chart">{products.map((product,index)=><div key={product.product||product.name}><span>{product.image?<img src={product.image} alt=""/>:index+1}</span><div><strong>{product.name}</strong><i><b style={{width:`${Math.max(4,product.sold/maxProduct*100)}%`}}/></i><small>{product.sold} sold</small></div><span className="modern-product-revenue"><small>Revenue</small><b>{money.format(product.revenue)}</b></span></div>)}{!products.length&&<Empty text="Product sales will appear after your first order."/>}</div></article></div>
+    <aside className="modern-insight"><span>✦</span><div><strong>How to read this report</strong><p>Revenue includes verified paid orders. Pending orders are excluded until payment succeeds. Product rankings exclude cancelled orders.</p></div></aside>
+  </section>;
+}
+
+function Empty({text}){return <div className="modern-report-empty"><span>◇</span><p>{text}</p></div>}

@@ -1,0 +1,27 @@
+import { useState } from 'react';
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext.jsx';
+import { fetchDashboard } from '../../services/adminApi.js';
+import './new-admin.css';
+
+const paths={dashboard:'M3 11.5 12 4l9 7.5V21h-6v-6H9v6H3z',products:'M12 3 3 7.5 12 12l9-4.5z M3 7.5V17l9 4 9-4V7.5 M12 12v9',orders:'M6 3h12l2 5-2 13H6L4 8z M4 8h16 M9 12h6',customers:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M22 21v-2a4 4 0 0 0-3-3.87',payments:'M3 6h18v12H3z M3 10h18 M7 15h3',shipping:'M3 6h11v11H3z M14 10h4l3 4v3h-7z M7 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4z M18 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4z',invoices:'M6 2h9l4 4v16H6z M14 2v5h5 M9 12h6 M9 16h6',reports:'M4 20V10 M10 20V4 M16 20v-7 M22 20H2',reviews:'M12 3l2.8 5.67 6.2.9-4.5 4.38 1.06 6.18L12 17.2 6.44 20.13l1.06-6.18L3 9.57l6.2-.9z',homepage:'M3 5h18v14H3z M3 9h18 M8 19V9',settings:'M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z M19 13.5l2 1-2 3.5-2-1a8 8 0 0 1-3 1.7V21h-4v-2.3A8 8 0 0 1 7 17l-2 1-2-3.5 2-1a8 8 0 0 1 0-3L3 9.5 5 6l2 1a8 8 0 0 1 3-1.7V3h4v2.3A8 8 0 0 1 17 7l2-1 2 3.5-2 1a8 8 0 0 1 0 3z',roles:'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z M9 12l2 2 4-5'};
+const links=[['dashboard','Dashboard','/admin'],['products','Products','/admin/products'],['orders','Orders','/admin/orders'],['customers','Customers','/admin/users'],['payments','Payments','/admin/payments'],['shipping','Shipping','/admin/shipping'],['invoices','GST & Invoices','/admin/invoices'],['reports','Reports','/admin/reports'],['homepage','Homepage Manager','/admin/homepage'],['settings','Settings','/admin/settings'],['roles','Admin Roles','/admin/admins']];
+const visibleForRole=(icon,role)=>role==='superadmin'||!['settings','roles'].includes(icon);
+
+export function NewAdminIcon({name,size=21}){return <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={paths[name]||paths.dashboard}/></svg>}
+
+export default function NewAdminLayout(){
+  const [open,setOpen]=useState(false),[search,setSearch]=useState(''),[alerts,setAlerts]=useState(null),[alertsOpen,setAlertsOpen]=useState(false),[profileOpen,setProfileOpen]=useState(false); const {profile,user,role,logout}=useAuth(); const navigate=useNavigate();
+  const name=profile?.name||user?.displayName||'Admin'; const photo=profile?.photoURL||user?.photoURL;
+  const submitSearch=(event)=>{event.preventDefault();const q=search.trim();if(q)navigate(`/admin/search?q=${encodeURIComponent(q)}`)};
+  const toggleAlerts=async()=>{const next=!alertsOpen;setAlertsOpen(next);if(next&&!alerts){try{setAlerts(await fetchDashboard())}catch{setAlerts({stats:{},lowStock:[]})}}};
+  return <div className="new-admin-shell">
+    {open&&<button className="new-admin-overlay" aria-label="Close menu" onClick={()=>setOpen(false)}/>}
+    <aside className={`new-admin-sidebar${open?' is-open':''}`}>
+      <div className="new-admin-brand"><span>◇</span><strong>SKYRA</strong><small>JEWELLERY</small><button onClick={()=>setOpen(false)} aria-label="Close menu">×</button></div>
+      <nav>{links.filter(([icon])=>visibleForRole(icon,role)).map(([icon,label,to])=><NavLink key={to} to={to} end={to==='/admin'} onClick={()=>setOpen(false)} className={({isActive})=>isActive?'is-active':''}><NewAdminIcon name={icon}/><span>{label}</span></NavLink>)}</nav>
+      <div className="new-admin-profile-wrap"><button className="new-admin-profile-trigger" onClick={()=>setProfileOpen(current=>!current)} aria-expanded={profileOpen}>{photo?<img src={photo} alt=""/>:<span>{name.charAt(0)}</span>}<div><strong>{name}</strong><small>{role==='superadmin'?'Super Administrator':'Administrator'}</small></div><b>{profileOpen?'⌃':'⌄'}</b></button>{profileOpen&&<div className="new-admin-profile-menu"><Link to="/" onClick={()=>setProfileOpen(false)}>View storefront <span>↗</span></Link><button onClick={()=>{setProfileOpen(false);logout()}}>Sign out</button></div>}</div>
+    </aside>
+    <section className="new-admin-workspace"><header className="new-admin-topbar"><button className="new-admin-menu" onClick={()=>setOpen(true)} aria-label="Open menu"><i/><i/><i/></button><form className="new-admin-global-search" onSubmit={submitSearch}><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search orders, products, customers…" aria-label="Search administration"/><button aria-label="Submit search">⌕</button></form><div className="new-admin-alert-wrap"><button className="new-admin-bell" onClick={toggleAlerts} aria-label="Notifications" aria-expanded={alertsOpen}>♧{alerts&&((alerts.stats?.pendingOrders||0)+(alerts.lowStock?.length||0))>0&&<b>{Math.min(99,(alerts.stats?.pendingOrders||0)+(alerts.lowStock?.length||0))}</b>}</button>{alertsOpen&&<div className="new-admin-alert-popover"><h3>Store alerts</h3><button onClick={()=>{setAlertsOpen(false);navigate('/admin/orders')}}><span>Pending orders</span><b>{alerts?.stats?.pendingOrders??'…'}</b></button><button onClick={()=>{setAlertsOpen(false);navigate('/admin/products')}}><span>Low stock products</span><b>{alerts?.lowStock?.length??'…'}</b></button></div>}</div><Link to="/" className="new-admin-storefront"><span>◇</span><div><small>Open website</small><strong>SKYRA JEWELLERY</strong></div><b>↗</b></Link></header><main><Outlet/></main></section>
+  </div>;
+}

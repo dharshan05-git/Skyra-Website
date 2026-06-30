@@ -1,0 +1,3 @@
+import { createEmailClient } from '../config/brevo.js';
+import { env } from '../config/env.js';
+export async function sendOrderConfirmation(order) { const client = createEmailClient(); if (!client || !env.BREVO_SENDER_EMAIL) return false; await client.transactionalEmails.sendTransacEmail({ sender: { email: env.BREVO_SENDER_EMAIL, name: env.BREVO_SENDER_NAME }, to: [{ email: order.shippingAddress.email, name: order.shippingAddress.fullName }], subject: `Order ${order.orderNumber} confirmed`, htmlContent: `<h1>Thank you for your order</h1><p>Your SKYRA order <strong>${order.orderNumber}</strong> has been confirmed.</p><p>Total: ₹${order.total}</p>` }); return true; }

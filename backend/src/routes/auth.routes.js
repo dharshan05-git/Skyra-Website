@@ -1,0 +1,12 @@
+import { Router } from 'express';
+import { getProfile, patchProfile, syncUser } from '../controllers/auth.controller.js';
+import { authenticate } from '../middleware/auth.middleware.js';
+import { validate } from '../middleware/validate.middleware.js';
+import { asyncHandler } from '../utils/asyncHandler.js';
+import { registerSyncSchema, updateProfileSchema } from '../validators/auth.validator.js';
+const router = Router();
+router.use(authenticate);
+router.post('/sync', validate(registerSyncSchema), asyncHandler(syncUser));
+router.get('/me', asyncHandler(getProfile));
+router.patch('/me', validate(updateProfileSchema), asyncHandler(patchProfile));
+export default router;

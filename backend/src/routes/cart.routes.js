@@ -1,0 +1,13 @@
+import { Router } from 'express';
+import * as controller from '../controllers/cart.controller.js';
+import { authenticate } from '../middleware/auth.middleware.js';
+import { validate } from '../middleware/validate.middleware.js';
+import { asyncHandler } from '../utils/asyncHandler.js';
+import { cartItemIdParamSchema, cartItemSchema, updateCartItemSchema } from '../validators/cart.validator.js';
+const router = Router(); router.use(authenticate);
+router.get('/', asyncHandler(controller.getCart));
+router.post('/items', validate(cartItemSchema), asyncHandler(controller.addItem));
+router.patch('/items/:itemId', validate(updateCartItemSchema), asyncHandler(controller.updateItem));
+router.delete('/items/:itemId', validate(cartItemIdParamSchema), asyncHandler(controller.removeItem));
+router.delete('/', asyncHandler(controller.clearCart));
+export default router;
