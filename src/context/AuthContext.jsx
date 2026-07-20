@@ -3,7 +3,7 @@ import { onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
 import { auth, authPersistenceReady, firebaseConfigured, googleProvider } from '../services/firebase.js';
 
 const AuthContext = createContext(null);
-const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/$/, '');
+const API_URL = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
 
 async function loadProfile(firebaseUser) {
   const token = await firebaseUser.getIdToken();
