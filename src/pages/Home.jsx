@@ -58,7 +58,11 @@ export default function Home() {
     <>
   <section className="hero hero-slider" id="hero">
     <div className={`hero-slide hero-slide--img${slide === 0 ? ' active' : ''}`}>
-      <img src="images/main-header.png" alt="SKYRA Hero" className="hero-bg-img" />
+      <img
+        src="/images/main-header.png"
+        alt="SKYRA Hero"
+        className="hero-bg-img"
+      />
     </div>
     <div className={`hero-slide hero-slide--vid${slide === 1 ? ' active' : ''}`}>
       <video

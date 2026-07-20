@@ -54,14 +54,14 @@ export default function Footer() {
             <li><a href="/terms-policy">Terms & Policy</a></li>
           </ul>
         </div>
-        <div>
+        <div className="footer-about-column">
           <p className="footer-heading">About</p>
           <ul className="footer-links">
             <li><a href="/our-story">Our Story</a></li>
             <li><a href="/#why-skyra">Why Skyra</a></li>
             <li><a href="mailto:info@skyrajewels.co.in">Contact Us</a></li>
-            <li style={{marginTop:'4px'}}><a href="mailto:info@skyrajewels.co.in" style={{fontSize:'12px', opacity:'0.8'}}>info@skyrajewels.co.in</a></li>
-            <li><a href="tel:+918669052740" style={{fontSize:'12px', opacity:'0.8'}}>+91 86690 52740</a></li>
+            <li className="footer-contact-link"><a href="mailto:info@skyrajewels.co.in">info@skyrajewels.co.in</a></li>
+            <li className="footer-contact-link"><a href="tel:+918669052740">+91 86690 52740</a></li>
           </ul>
         </div>
         <div>

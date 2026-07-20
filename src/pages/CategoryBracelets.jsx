@@ -23,7 +23,7 @@ export default function CategoryBracelets() {
 
 
 
-<section className="category-hero category-hero--has-bg category-hero--bracelets" style={{ backgroundImage: "url('images/bracelet-header.png')" }}></section>
+<section className="category-hero category-hero--has-bg category-hero--bracelets" style={{ backgroundImage: "url('images/skyraaaa/bracelets.png')" }}></section>
 
 <section className="section">
   <div className="category-toolbar"><p className="category-count">Showing 2 products</p><select className="sort-select" id="sortSelect"><option value="">Sort By</option><option value="price-low">Price: Low to High</option><option value="price-high">Price: High to Low</option><option value="newest">Newest First</option><option value="name-az">Name: A-Z</option></select></div>

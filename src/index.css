@@ -1011,11 +1011,11 @@ button {
   text-align: center;
   padding: 0;
   position: relative;
-  background-size: cover;
+  background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
   min-height: 0;
-  aspect-ratio: 2 / 1;
+  aspect-ratio: 1800 / 642;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1023,26 +1023,33 @@ button {
   box-sizing: border-box;
 }
 
-.category-hero--anklets,
+.category-hero--anklets {
+  aspect-ratio: 1800 / 642;
+}
+
 .category-hero--sets {
-  aspect-ratio: 300 / 107;
+  aspect-ratio: 1600 / 571;
+}
+
+.category-hero--sets::before {
+  background: transparent;
 }
 
 .category-hero--bracelets {
-  aspect-ratio: 1400 / 559;
+  aspect-ratio: 1800 / 642;
 }
 
 .category-hero--earrings {
-  aspect-ratio: 3 / 1;
+  aspect-ratio: 1800 / 642;
 }
 
 .category-hero--necklace,
 .category-hero--pendants {
-  aspect-ratio: 1400 / 787;
+  aspect-ratio: 1800 / 642;
 }
 
 .category-hero--rings {
-  aspect-ratio: 2 / 1;
+  aspect-ratio: 1800 / 642;
 }
 
 .category-hero--has-bg {
@@ -1301,9 +1308,9 @@ button {
   }
 
   .category-hero {
-    aspect-ratio: 2.6 / 1;
+    aspect-ratio: 1800 / 642;
     background-size: contain;
-    background-color: #e5e5e5;
+    background-color: #f8f0ea;
   }
 
   .products-grid {
@@ -1425,6 +1432,10 @@ button {
     height: 70vh;
   }
 
+  .hero-bg-img {
+    object-position: 14% center;
+  }
+
   .hero-content {
     padding: 0 30px;
   }
@@ -1492,7 +1503,133 @@ button {
   }
 
   .why-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 16px;
+    row-gap: 36px;
+  }
+
+  .why-section {
+    padding: 56px 18px;
+  }
+
+  .why-section .section-header {
+    margin-bottom: 34px;
+  }
+
+  .why-icon {
+    width: 42px;
+    height: 42px;
+    margin-bottom: 12px;
+  }
+
+  .why-card h4 {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  .why-card p {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 640px) {
+  .footer {
+    padding: 34px 18px 0;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 18px;
+    padding-bottom: 22px;
+  }
+
+  .footer-grid > div:first-child,
+  .footer-grid > div:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .footer-brand-name {
+    margin-bottom: 8px;
+    font-size: 20px;
+    letter-spacing: 3px;
+  }
+
+  .footer-desc {
+    font-size: 11px;
+    line-height: 1.45;
+  }
+
+  .footer-socials {
+    margin-top: 12px;
+  }
+
+  .footer-heading {
+    margin-bottom: 10px;
+    padding-bottom: 7px;
+    font-size: 11px;
+    letter-spacing: 1.2px;
+  }
+
+  .footer-links {
+    gap: 6px;
+  }
+
+  .footer-links a {
+    font-size: 12px;
+  }
+
+  .footer-about-column {
+    grid-column: 1 / -1;
+  }
+
+  .footer-about-column .footer-links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px 14px;
+  }
+
+  .footer-contact-link {
+    grid-column: 1 / -1;
+  }
+
+  .footer-contact-link a {
+    display: inline-block;
+    font-size: 11px !important;
+    opacity: 0.78;
+  }
+
+  .newsletter-form {
+    margin-top: 10px;
+    border-radius: 18px;
+  }
+
+  .newsletter-input {
+    min-width: 0;
+    padding: 10px 12px;
+  }
+
+  .newsletter-btn {
+    padding: 10px 13px;
+    letter-spacing: 0.8px;
+    font-size: 9px;
+  }
+
+  .footer-bottom {
+    padding: 14px 0 18px;
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .payment-icons {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .payment-icons span {
+    padding: 3px 8px;
+    font-size: 9px;
   }
 }
 
@@ -2727,6 +2864,26 @@ button {
 
   .nav-search-overlay form {
     padding: 25px 20px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .navbar .nav-links.active {
+    left: auto;
+    right: 20px;
+    width: min(220px, calc(100vw - 40px));
+    align-items: flex-start;
+    padding: 24px 30px;
+    border: 1px solid var(--gray-200);
+    box-shadow: 0 18px 42px rgba(41, 20, 21, .14);
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar .nav-links.active {
+    top: 64px;
+    right: 10px;
+    width: min(220px, calc(100vw - 20px));
   }
 }
 

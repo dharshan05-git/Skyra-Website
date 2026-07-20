@@ -23,7 +23,7 @@ export default function CategoryRings() {
 
 
 
-<section className="category-hero category-hero--has-bg category-hero--rings" style={{ backgroundImage: "url('images/ring-header.png')" }}></section>
+<section className="category-hero category-hero--has-bg category-hero--rings" style={{ backgroundImage: "url('images/skyraaaa/rings.png')" }}></section>
 
 <section className="section">
   <div className="category-toolbar">

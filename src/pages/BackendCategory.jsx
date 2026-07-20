@@ -14,12 +14,12 @@ const SORT_OPTIONS = [
 ];
 
 const HERO_IMAGES = {
-  anklets: 'images/ankle-header.png',
-  bracelets: 'images/bracelet-header.png',
-  earrings: 'images/earring-header.png',
-  pendants: 'images/necklace-header.png',
-  rings: 'images/ring-header.png',
-  sets: 'images/sets-header.png',
+  anklets: 'images/skyraaaa/anklet.png',
+  bracelets: 'images/skyraaaa/bracelets.png',
+  earrings: 'images/skyraaaa/earrings.png',
+  pendants: 'images/skyraaaa/necklace.png',
+  rings: 'images/skyraaaa/rings.png',
+  sets: '/images/necklace-set-header.jpeg',
 };
 
 function ProductGrid({ products }) {
